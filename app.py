@@ -62,6 +62,8 @@ def pix_confirmation():
 def payment_pix_page(payment_id):
     payment = Payment.query.get(payment_id)
 
+    if not payment:
+        return render_template('404.html')
 
     if payment.paid:#template quando o pedido for pago
         return render_template('confirmed_payment.html',
@@ -78,6 +80,10 @@ def payment_pix_page(payment_id):
 @socketio.on('connect')
 def handle_connect():
     print('Client connected to the server')
+
+@socketio.on('disconect')#o cliente ira se desconectar automaticamente quando ele acessar a pagina de payment confirmation, pois la nao tem nenhuma conexao do websocket
+def handle_disconnect():
+    print('Client has disconect to the server')
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
